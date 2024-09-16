@@ -128,3 +128,17 @@ sudo systemctl restart myproject
 ```
 
 You should now be able to navigate to your server’s domain name in your web browser: ```http://localhost```
+
+
+![flask1](https://github.com/user-attachments/assets/4910f132-9098-44e0-b556-b02ceeef4dcc)
+
+![flask2](https://github.com/user-attachments/assets/c8ec5eb7-2250-4a73-85a1-e6bdf9b2f506)
+
+![flask3](https://github.com/user-attachments/assets/48c9c386-45b9-40cb-8fbd-7584e27a274e)
+
+![flask4](https://github.com/user-attachments/assets/f7c57dfa-602c-467c-8925-16987428ece8)
+
+
+
+
+
