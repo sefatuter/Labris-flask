@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+
+{% block title %}Create User{% endblock %}
+
+
+{% block content %}
+
+
+   {% for message in get_flashed_messages() %}
+   <div class="alert alert-warning alert-dismissible fade show" role="alert">
+       {{ message }}
+   </div>
+   {% endfor %}
+
+
+<h2>Create User</h2>
+<form method="POST" action="/user/create">
+   <div class="form-group">
+       <label for="username">Username</label>
+       <input type="text" class="form-control" id="username" name="username" value="{{ username or '' }}" required>
+   </div>
+   <div class="form-group">
+       <label for="firstname">First Name</label>
+       <input type="text" class="form-control" id="firstname" name="firstname" value="{{ firstname or '' }}" required>
+   </div>
+   <div class="form-group">
+       <label for="middlename">Middle Name</label>
+       <input type="text" class="form-control" id="middlename" name="middlename" value="{{ middlename or '' }}">
+   </div>
+   <div class="form-group">
+       <label for="lastname">Last Name</label>
+       <input type="text" class="form-control" id="lastname" name="lastname" value="{{ lastname or '' }}" required>
+   </div>
+   <div class="form-group">
+       <label for="birthdate">Birthdate</label>
+       <input type="date" class="form-control" id="birthdate" name="birthdate" value="{{ birthdate or '' }}" required>
+   </div>
+   <div class="form-group">
+       <label for="email">Email</label>
+       <input type="email" class="form-control" id="email" name="email" value="{{ email or '' }}" required>
+   </div>
+   <div class="form-group">
+       <label for="password">Password</label>
+       <input type="password" class="form-control" id="password" name="password" required>
+   </div>
+      <button type="submit" class="formbtn btn btn-sm" style="width: 200px; color: black; background-color: #1e1f22">Create User</button>
+<!--   <button type="submit" class="btn btn-success btn-sm">Create User</button>-->
+   <a href="/user/list" class="formbtn btn btn-sm" style="width: 200px; color: black; background-color: #1e1f22">User List</a>
+</form>
+{% endblock %}
+

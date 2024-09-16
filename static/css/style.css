@@ -1,0 +1,375 @@
+body {
+            font-family: 'Raleway', sans-serif;
+            /*background: rgba(0, 0, 0, 0.86);*/
+            background-image: url("../images/dark-abstract.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #d1d1d1;
+            overflow-x: hidden;
+        }
+    .footer-custom {
+                text-align: center;
+                padding: 1rem;
+                color: #d1d1d1;
+                margin-top: 4rem;
+                box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
+                background-size: cover; /* Ensures the background image covers the entire footer */
+                background-position: center; /* Centers the background image */
+                position: fixed;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+            }
+
+        .navbar {
+            background-color: #2b2b2b;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease-in-out;
+            color: #ffffff;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.1);
+        }
+
+        .nav-link {
+            font-weight: 500;
+            color: #d1d1d1;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #1dbf73; /* Accent color */
+            transform: translateY(-2px);
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: rgba(44, 62, 80, 0.9); /* Darker background with some opacity */
+            color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            margin-bottom: 2rem;
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-section p {
+            font-size: 1.2rem;
+        }
+
+        .container {
+            margin-top: 2rem;
+        }
+
+        .card {
+            background-color: #2b2b2b;
+            color: #d1d1d1;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            transition: transform 0.3s ease;
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        /* Main content area should occupy remaining space above the footer */
+        .main-content {
+            min-height: calc(100vh - 80px); /* Adjust the height based on footer height */
+            padding-bottom: 80px; /* Make space for the footer */
+        }
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Onest:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Onest', sans-serif;
+}
+
+:root{
+  --color-white: #fff;
+  --color-1:#350048;
+  --color-2:rgba(255, 255, 255, 0.05);
+  --color-3:rgba(0, 0, 0, 0.2);
+  --color-4:rgba(255, 255, 255, 0.1);
+  --color-gradient-1: rgba(255,255,255, 0.15);
+
+}
+
+.container .btn_base {
+  position: relative;
+  width: 155px;
+  height: 50px;
+  margin: 20px;
+}
+
+.container .btn_base a {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--color-2);
+  box-shadow: 0 15px 35px var(--color-3);
+  border-top: 1px solid var(--color-4);
+  border-bottom: 1px solid var(--color-4);
+  border-radius: 30px;
+  color: var(--color-white);
+  z-index: 1;
+  font-weight: 400;
+  letter-spacing: 1px;
+  text-decoration: none;
+  overflow: hidden;
+  transition: 0.8s;
+  backdrop-filter: blur(15px);
+}
+
+.container .btn_base:hover a {
+  letter-spacing: 3px;
+}
+
+.container .btn_base a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(to left, var(--color-gradient-1), transparent);
+  transform: skewX(45deg) translateX(0);
+  transition: 0.8s;
+}
+
+.container .btn_base:hover a::before {
+    transform: skewX(45deg) translateX(200%);
+}
+
+.container .btn_base::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -5px;
+  width: 30px;
+  height: 10px;
+  background: red;
+  border-radius: 10px;
+  transition: 0.8s;
+  transition-delay: 0s;
+}
+
+.container .btn_base:hover::before {
+  bottom: 0;
+  height: 50%;
+  width: 80%;
+  border-radius: 30px;
+  transition-delay: 0.5s;
+}
+
+
+.container .btn_base::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -5px;
+  width: 30px;
+  height: 10px;
+  background: red;
+  border-radius: 10px;
+  transition: 0.8s;
+  transition-delay: 0s;
+}
+
+.container .btn_base:hover::after {
+  top: 0;
+  height: 50%;
+  width: 80%;
+  border-radius: 30px;
+  transition-delay: 0.5s;
+}
+
+.container .btn_base:nth-child(1)::before,
+.container .btn_base:nth-child(1)::after {
+  background: #ff1f71;
+  box-shadow: 0 0 5px #ff1f71,
+              0 0 15px #ff1f71,
+              0 0 30px #ff1f71,
+              0 0 60px #ff1f71;
+}
+
+
+.container .btn_base:nth-child(2)::before,
+.container .btn_base:nth-child(2)::after {
+  background: #2bd2ff;
+  box-shadow: 0 0 5px #2bd2ff,
+              0 0 15px #2bd2ff,
+              0 0 30px #2bd2ff,
+              0 0 60px #2bd2ff;
+}
+
+.container .btn_base:nth-child(3)::before,
+.container .btn_base:nth-child(3)::after {
+  background: #1eff45;
+  box-shadow: 0 0 5px #1eff45,
+              0 0 15px #1eff45,
+              0 0 30px #1eff45,
+              0 0 60px #1eff45;
+}
+
+.wave{
+  position: relative;
+  -webkit-box-reflect: below -12px linear-gradient(transparent,rgba(0,0,0,0.2));
+}
+.wave span{
+  position: relative;
+  display: inline-block;
+  color:#fff;
+  font-size:4em;
+  text-transform: uppercase;
+  animation:animate 1.5s ease-in-out infinite;
+  animation-delay: calc(.1s * var(--c));
+}
+@keyframes animate{
+  0%,100%{
+    transform: translateY(0px);
+  }
+  20%{
+    transform: translateY(-20px);
+  }
+  40%{
+    transform: translateY(0px);
+  }
+}
+
+
+
+.login-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  padding: 40px;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,.5);
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0,0,0,.6);
+  border-radius: 10px;
+}
+
+.login-box h2 {
+  margin: 0 0 30px;
+  padding: 0;
+  color: #fff;
+  text-align: center;
+}
+
+.login-box .user-box {
+  position: relative;
+}
+
+.login-box .user-box input {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  margin-bottom: 30px;
+  border: none;
+  border-bottom: 1px solid #fff;
+  outline: none;
+  background: transparent;
+}
+.login-box .user-box label {
+  position: absolute;
+  top:0;
+  left: 0;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  pointer-events: none;
+  transition: .5s;
+}
+
+.login-box .user-box input:focus ~ label,
+.login-box .user-box input:valid ~ label {
+  top: -20px;
+  left: 0;
+  color: #03e9f4;
+  font-size: 12px;
+}
+
+.login-box form a {
+  position: relative;
+  display: inline-block;
+  padding: 10px 20px;
+  color: #03e9f4;
+  font-size: 16px;
+  text-decoration: none;
+  text-transform: uppercase;
+  overflow: hidden;
+  transition: .5s;
+  margin-top: 40px;
+  letter-spacing: 4px
+}
+
+
+
+.formbtn {
+    width: 100%;
+    margin: 18px 0 9px 0;
+  }
+
+.formbtn {
+  padding: 8px 20px;
+  border-radius: 0;
+  overflow: hidden;
+
+  &::before {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      120deg,
+      transparent,
+      var(--primary-color),
+      transparent
+    );
+    transform: translateX(-100%);
+    transition: 0.6s;
+  }
+
+  &:hover {
+    background: transparent;
+    box-shadow: 0 0 20px 10px hsla(204, 70%, 53%, 0.5);
+
+    &::before {
+      transform: translateX(100%);
+    }
+  }
+}
+

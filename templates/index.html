@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+
+<div class="d-flex justify-content-center align-items-center" style="height: 70vh;">
+    <div>
+
+         <div class="wave m-5">
+            <span style="--c:1;">W</span>
+            <span style="--c:2;">e</span>
+            <span style="--c:3;">l</span>
+            <span style="--c:4;">c</span>
+            <span style="--c:5;">o</span>
+            <span style="--c:6;">m</span>
+            <span style="--c:7;">e</span>
+            <span style="--c:8;"></span>
+            <span style="--c:9;"></span>
+            <span style="--c:10;">!</span>
+            <span style="--c:11;">!</span>
+          </div>
+        <div class="text-center">
+            <div class="container">
+              <div class="btn_base btn"><a href="{{ url_for('login') }}">Login</a></div>
+              <div class="btn_base btn"><a href="{{ url_for('user_create') }}">Create User</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

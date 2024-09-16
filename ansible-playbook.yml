@@ -1,0 +1,267 @@
+---
+- name: Configure Server
+  hosts: localhost
+  become: true
+  
+  tasks:
+    - name: Set up start configuration
+      shell: |
+        cp /opt/sslfilter3.crt /etc/pki/ca-trust/source/anchors/
+        update-ca-trust
+        sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*.repo
+        sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*.repo
+        yum -y update
+
+    - name: Install required packages yum
+      yum:
+        name:
+          - nano
+          - epel-release
+          - gcc
+          - gcc-c++
+          - make
+          - pcre
+          - pcre-devel
+          - zlib
+          - zlib-devel
+          - libxml2
+          - libxml2-devel
+          - git
+          - curl
+          - wget
+          - openssl
+          - openssl-devel
+          - libtool
+          - libtool-ltdl-devel
+          - autoconf
+          - automake
+          - perl-ExtUtils-Embed
+          - nginx
+          - bison
+          - ca-certificates
+          - curl
+          - flex
+          - gawk
+          - git
+          - libtool
+          - libxml2
+          - pkg-config
+          - wget
+          - python3
+          - python3-pip
+          - python3-devel
+        state: present
+
+    - name: Install required packages dnf
+      dnf:
+        name:
+          - libxml2-devel
+          - libxslt-devel
+          - gd-devel
+          - libcurl-devel
+          - expat-devel
+          - pcre-devel
+          - pcre2-devel
+          - openssl-devel
+          - libxml2-devel
+          - libxslt-devel
+          - gd-devel
+        state: present
+# Clone Git Repositories
+    - name: Clone repositories
+      git:
+        repo: "{{ item.repo }}"
+        dest: "{{ item.dest }}"
+        version: "{{ item.version | default(omit) }}"
+        depth: "{{ item.depth | default(omit) }}"
+        force: yes
+      loop:
+        - { repo: 'https://github.com/SpiderLabs/ModSecurity', dest: '/opt/ModSecurity', version: 'v3.0.9', depth: 1 }
+        - { repo: 'https://github.com/SpiderLabs/ModSecurity-nginx.git', dest: '/opt/ModSecurity-nginx', depth: 1 }
+        - { repo: 'https://github.com/coreruleset/coreruleset.git', dest: '/opt/modsecurity-crs' }
+        - { repo: 'https://github.com/sefatuter/Labris-flask.git', dest: '/opt/flask_labris' }
+
+    - name: Download nginx source
+      get_url:
+        url: 'http://nginx.org/download/nginx-1.14.1.tar.gz'
+        dest: '/opt/nginx-1.14.1.tar.gz'
+
+    - name: Extract Nginx source
+      unarchive:
+        src: '/opt/nginx-1.14.1.tar.gz'
+        dest: '/opt/'
+        creates: '/opt/nginx-1.14.1'
+# ModSecurity Configuration
+    - name: Set up ModSecurity Configuration
+      shell: |
+        cd ModSecurity/
+        git submodule init
+        git submodule update
+        ./build.sh
+        ./configure
+        make
+        make install
+
+    - name: Install Nginx from source
+      shell: |
+        cd /opt/nginx-1.14.1
+        ./configure --add-dynamic-module=../ModSecurity-nginx --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --modules-path=/usr/lib64/nginx/modules --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --http-client-body-temp-path=/var/lib/nginx/tmp/client_body --http-proxy-temp-path=/var/lib/nginx/tmp/proxy --http-fastcgi-temp-path=/var/lib/nginx/tmp/fastcgi --http-uwsgi-temp-path=/var/lib/nginx/tmp/uwsgi --http-scgi-temp-path=/var/lib/nginx/tmp/scgi --pid-path=/run/nginx.pid --lock-path=/run/lock/subsys/nginx --user=nginx --group=nginx --with-file-aio --with-ipv6 --with-http_ssl_module --with-http_v2_module --with-http_realip_module --with-http_addition_module --with-http_xslt_module=dynamic --with-http_image_filter_module=dynamic --with-http_sub_module --with-http_dav_module --with-http_flv_module --with-http_mp4_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_random_index_module --with-http_secure_link_module --with-http_degradation_module --with-http_slice_module --with-http_stub_status_module --with-http_perl_module=dynamic --with-http_auth_request_module --with-mail=dynamic --with-mail_ssl_module --with-pcre --with-pcre-jit --with-stream=dynamic --with-stream_ssl_module --with-debug --with-cc-opt='-O2 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1 -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection' --with-ld-opt='-Wl,-z,relro -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-E'
+        make modules
+        mkdir -p /etc/nginx/modules
+        cp objs/ngx_http_modsecurity_module.so /etc/nginx/modules/
+
+# Configure Coreruleset and .confs
+    - name: Copy nginx.conf file
+      copy:
+        src: /opt/flask_labris/confs/nginx.conf
+        dest: /etc/nginx/nginx.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Set up Core Ruleset Configuration
+      shell: |        
+        mv /opt/modsecurity-crs/crs-setup.conf.example /opt/modsecurity-crs/crs-setup.conf
+        mv /opt/modsecurity-crs/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf.example /opt/modsecurity-crs/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf
+        mv /opt/modsecurity-crs /usr/local/
+        mkdir -p /etc/nginx/modsec
+        cp /opt/ModSecurity/unicode.mapping /etc/nginx/modsec/
+      args:
+        warn: false
+    
+    - name: Copy modsecurity.conf file
+      copy:
+        src: /opt/flask_labris/confs/modsecurity.conf
+        dest: /etc/nginx/modsec/modsecurity.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Copy main.conf file
+      copy:
+        src: /opt/flask_labris/confs/main.conf
+        dest: /etc/nginx/modsec/main.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Copy flask.com.conf file
+      copy:
+        src: /opt/flask_labris/confs/flask.com.conf
+        dest: /etc/nginx/conf.d/flask.com.conf
+        owner: root
+        group: root
+        mode: '0644'
+# Https Configuration
+    - name: HTTPS Configuration
+      shell: |
+        # Remove directories if they exist
+        rm -rf /root/certs
+        rm -rf /root/certs/flask.com
+
+        # Create directories
+        mkdir -p /root/certs/flask.com
+      args:
+        creates: /root/certs/flask.com
+
+    - name: Copy .crt file
+      copy:
+        src: /opt/flask_labris/certs/flask_labris.crt
+        dest: /root/certs/flask.com/flask_labris.crt
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Copy .key file
+      copy:
+        src: /opt/flask_labris/certs/flask_labris.key
+        dest: /root/certs/flask.com/flask_labris.key
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Give Required Permissions
+      shell: |
+        chmod 400 /root/certs/flask.com/flask_labris.key
+# Upgrade pip and setup flask app
+    - name: Set up Flask application
+      shell: |
+        pip3 install --upgrade pip
+
+    - name: Install Python packages from requirements
+      pip:
+        requirements: /opt/flask_labris/requirements.txt
+
+    - name: Set up Flask application
+      shell: |
+        virtualenv /opt/flask_labris/venv
+        source /opt/flask_labris/venv/bin/activate
+        pip install -r /opt/flask_labris/requirements.txt
+        pip install uwsgi
+        deactivate
+        chmod -R 777 /opt/flask_labris
+
+    - name: Copy myproject.service file
+      copy:
+        src: /opt/flask_labris/confs/myproject.service
+        dest: /etc/systemd/system/myproject.service
+        owner: root
+        group: root
+        mode: '0644'
+# Database setup postgresql
+
+    - name: Update the package manager
+      dnf:
+        name: '*'
+        state: latest
+
+    - name: Install PostgreSQL and its server
+      shell: |
+        dnf -y install @postgresql:12
+        dnf install -y postgresql-server
+
+    - name: Create the PostgreSQL data directory
+      file:
+        path: /var/lib/pgsql/data
+        state: directory
+        owner: postgres
+        group: postgres
+        mode: '0700'
+        
+    - name: Update permissions
+      shell: |
+        chown postgres:postgres /var/lib/pgsql/data
+
+    - name: Initialize the PostgreSQL database cluster
+      shell: |
+        su -c "initdb -D /var/lib/pgsql/data" - postgres
+        su -c "pg_ctl -D /var/lib/pgsql/data -l /var/lib/pgsql/data/logfile start" - postgres
+
+    - name: Set PostgreSQL password
+      postgresql_user:
+        name: postgres
+        password: 'sql1234'
+        state: present
+
+    - name: Create Flask database
+      postgresql_db:
+        name: flaskdb
+        state: present
+
+    - name: Ensure Flask is installed
+      pip:
+        name: flask
+        state: present
+
+    - name: Create database tables
+      shell: |
+        export FLASK_APP=/opt/flask_labris/app.py
+        flask shell <<EOF
+        from app import db
+        db.create_all()
+        exit()
+        EOF
+      environment:
+        FLASK_APP: /opt/flask_labris/app.py
+      args:
+        chdir: /opt/flask_labris

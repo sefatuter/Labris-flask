@@ -1,0 +1,56 @@
+---
+- name: Configure Nginx with ModSecurity
+  hosts: localhost
+  become: true
+
+  tasks:
+    - name: Clone the repository containing configuration files
+      git:
+	repo: 'https://github.com/sefatuter/Labris-flask.git'
+        dest: /opt/flask_labris
+        depth: 1
+
+    - name: Copy nginx.conf file
+      copy:
+	src: /opt/flask_labris/confs/nginx.conf
+        dest: /etc/nginx/nginx.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Create directory for ModSecurity configuration files
+      file:
+	path: /etc/nginx/modsec
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Copy modsecurity.conf file
+      copy:
+	src: /opt/flask_labris/confs/modsecurity.conf
+        dest: /etc/nginx/modsec/modsecurity.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Copy additional ModSecurity configuration files
+      copy:
+	src: /opt/flask_labris/confs/main.conf
+        dest: /etc/nginx/modsec/main.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Copy additional ModSecurity configuration files
+      copy:
+	src: /opt/flask_labris/confs/flask.com.conf
+        dest: /etc/nginx/conf.d/
+        owner: root
+        group: root
+        mode: '0644'
+
+
+
+
+
