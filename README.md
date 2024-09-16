@@ -1,4 +1,5 @@
 # Labris-flask
+Designed and deployed a dynamic Flask web application using uWSGI and Nginx, secured with ModSecurity, containerized, ansible was used to automate the configuration, and served over HTTPS using Nginx with ModSecurity for enhanced security.
 
 Pull image:
 
